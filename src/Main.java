@@ -6,8 +6,15 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) throws FileNotFoundException {
-        Scanner myScanner = new Scanner(new File("words.txt"));
+    static Scanner keyboard = new Scanner(System.in);
+    static Random myRandom = new Random();
+    public static void main(String[] args) {
+        Scanner myScanner = null;
+        try {
+            myScanner = new Scanner(new File("words.txt"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
         List<String> words = new ArrayList<>();
 
@@ -15,8 +22,34 @@ public class Main {
             words.add(myScanner.nextLine());
         }
 
-        Random myRandom = new Random();
-        String word = words.get(myRandom.nextInt(words.size()) + 1);
+        String word = words.get(myRandom.nextInt(words.size()));
         System.out.println(word);
-     }
+
+        List<Character> playerGuesses = new ArrayList<>();
+
+        printWordState(word, playerGuesses);
+
+        while (true) {
+            getPlayerGuesses(keyboard, word, playerGuesses);
+        }
+    }
+
+    private static void getPlayerGuesses(Scanner keyboard, String word, List<Character> playerGuesses) {
+        System.out.print("Please enter a letter: ");
+        String letterGuess = keyboard.nextLine();
+        playerGuesses.add(letterGuess.charAt(0));
+
+        printWordState(word, playerGuesses);
+    }
+
+    private static void printWordState(String word, List<Character> playerGuesses) {
+        for (int i = 0; i < word.length(); i++) {
+            if (playerGuesses.contains(word.charAt(i))) {
+                System.out.print(word.charAt(i));
+            } else {
+                System.out.print("-");
+            }
+        }
+        System.out.println();
+    }
 }
